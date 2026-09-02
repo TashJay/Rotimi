@@ -1,0 +1,523 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   JAMES IRUNGU — Design system
+   Palette: deep petrol ink + bone type, with two restrained signals:
+   gold (human / editorial) and aqua (machine / data).
+   Type: Bricolage Grotesque (display) · Manrope (body) · JetBrains Mono (data)
+   ========================================================================== */
+
+@theme {
+  --color-ink-950: #04070a;
+  --color-ink-900: #070a0e;
+  --color-ink-850: #0a0f15;
+  --color-ink-800: #0d141b;
+  --color-ink-700: #121c25;
+  --color-ink-600: #18242e;
+  --color-ink-500: #213141;
+
+  --color-bone: #e9edea;
+  --color-bone-dim: #b7c2c6;
+  --color-mute: #7e8f99;
+  --color-mute-2: #55666f;
+
+  --color-gold: #e8c07a;
+  --color-gold-hot: #f6d59a;
+  --color-aqua: #66d4c2;
+  --color-aqua-deep: #2f8f86;
+  --color-clay: #cf8a68;
+  --color-signal: #ff5f56;
+
+  --font-display: "Bricolage Grotesque", "Manrope", sans-serif;
+  --font-sans: "Manrope", "Bricolage Grotesque", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --leading-tight: 0.92;
+  --tracking-hair: 0.32em;
+
+  --animate-marquee: marquee 46s linear infinite;
+  --animate-marquee-slow: marquee 90s linear infinite;
+  --animate-spin-slow: spin 38s linear infinite;
+  --animate-spin-slower: spin 90s linear infinite reverse;
+  --animate-blink: blink 2.4s ease-in-out infinite;
+  --animate-scanline: scanline 6s linear infinite;
+  --animate-drift: drift 16s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 3s ease-out infinite;
+}
+
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+@keyframes scanline {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 0.55; }
+  90% { opacity: 0.55; }
+  100% { transform: translateY(1200%); opacity: 0; }
+}
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -14px, 0) scale(1.03); }
+}
+@keyframes pulse-ring {
+  0% { transform: scale(0.7); opacity: 0.7; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    background-color: var(--color-ink-900);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-feature-settings: "ss01", "cv01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-gold) 78%, transparent);
+    color: #0a0a0a;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-aqua);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ink-950);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--color-ink-500), var(--color-ink-600));
+    border-radius: 99px;
+    border: 2px solid var(--color-ink-950);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-aqua-deep);
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: var(--leading-tight);
+  }
+  img { user-select: none; }
+}
+
+/* ---------------------------- utilities --------------------------------- */
+
+@utility mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+/* Fine film grain — cheap, static, GPU friendly */
+@utility grain {
+  position: relative;
+  isolation: isolate;
+}
+
+.grain-layer {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.34;
+  mix-blend-mode: overlay;
+}
+
+.hairline {
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-bone) 16%, transparent) 18%,
+    color-mix(in srgb, var(--color-bone) 16%, transparent) 82%,
+    transparent
+  );
+}
+
+/* Portrait cut-out: screen blend dissolves the black field of the source */
+.cutout {
+  mix-blend-mode: screen;
+  filter: contrast(1.08) saturate(1.12);
+}
+
+.edge-fade-x {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+
+.fade-b {
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+}
+
+.portrait-mask {
+  -webkit-mask-image: radial-gradient(78% 68% at 52% 40%, #000 42%, rgba(0, 0, 0, 0.55) 68%, transparent 94%);
+  mask-image: radial-gradient(78% 68% at 52% 40%, #000 42%, rgba(0, 0, 0, 0.55) 68%, transparent 94%);
+}
+
+.text-shadow-ink {
+  text-shadow: 0 2px 26px rgba(4, 7, 10, 0.85), 0 1px 3px rgba(4, 7, 10, 0.9);
+}
+
+.tilt-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.tilt-3d {
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translate3d(0, 0, 0);
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.tilt-3d > * {
+  transform: translateZ(24px);
+  transform-style: preserve-3d;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* ----------------------- project cover choreography ---------------------- */
+
+@keyframes cv-dashmove {
+  to { stroke-dashoffset: -320; }
+}
+@keyframes cv-routemove {
+  to { stroke-dashoffset: -400; }
+}
+@keyframes cv-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+@keyframes cv-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.16); opacity: 0.6; }
+}
+@keyframes cv-fly {
+  0% { transform: translate(0, 0) rotate(-14deg); }
+  50% { transform: translate(190px, -74px) rotate(-8deg); }
+  100% { transform: translate(340px, -30px) rotate(-2deg); }
+}
+
+@keyframes cv-rotate {
+  to { transform: rotate(360deg); }
+}
+.cv-spin { animation: cv-rotate 60s linear infinite; }
+.cv-blink { animation: cv-blink 1.6s ease-in-out infinite; }
+.cv-pulse { transform-origin: 612px 126px; animation: cv-pulse 4.6s ease-in-out infinite; }
+.cv-plane { animation: cv-fly 11s ease-in-out infinite alternate; }
+.cv-route { animation: cv-routemove 14s linear infinite; }
+.cv-dash path { animation: cv-dashmove 9s linear infinite; }
+.cv-bar { transform-origin: bottom; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.cv-lift,
+.cv-lift-2,
+.cv-drift,
+.cv-streaks,
+.cv-checker,
+.cv-bands,
+.cv-roller,
+.cv-swatches,
+.cv-chrome,
+.cv-title {
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+}
+.cv-sheen { transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease; }
+.cv-swatch { transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1); transform-origin: bottom center; }
+
+.group:hover .cv-sheen { opacity: 1; transform: translate3d(320%, 0, 0); }
+.group:hover .cv-lift { transform: translateY(-14px); }
+.group:hover .cv-lift-2 { transform: translateY(-7px); }
+.group:hover .cv-bar-0 { transform: scaleY(1.24); }
+.group:hover .cv-bar-1 { transform: scaleY(0.82); }
+.group:hover .cv-bar-2 { transform: scaleY(1.36); }
+.group:hover .cv-bar-3 { transform: scaleY(0.9); }
+.group:hover .cv-bar-4 { transform: scaleY(1.18); }
+.group:hover .cv-streaks { transform: translateX(-38px); }
+.group:hover .cv-checker { transform: translateX(-24px); }
+.group:hover .cv-ship { transform: translate(-26px, 8px) rotate(-4deg); }
+.group:hover .cv-hand { transform: rotate(-28deg); transform-origin: 180px 150px; }
+.group:hover .cv-drift { transform: translateX(-16px); }
+.group:hover .cv-bands { transform: translateY(10px); }
+.group:hover .cv-roller { transform: translate(18px, -12px); }
+.group:hover .cv-swatches .cv-swatch-0 { transform: translateY(-12px) rotate(-4deg); }
+.group:hover .cv-swatches .cv-swatch-2 { transform: translateY(-20px) rotate(3deg); }
+.group:hover .cv-title { transform: translateY(-6px); }
+.group:hover .cv-chrome { opacity: 0.75; }
+
+/* --------------------------- accessibility ------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media (max-width: 900px) {
+  /* keep the composite cheap on phones */
+  .grain-layer {
+    mix-blend-mode: normal;
+    opacity: 0.12;
+  }
+}
+
+@media (max-width: 640px) {
+  :root { font-size: 15.5px; }
+}
+
+/* ==========================================================================
+   NEOMORPHISM
+   Soft, restrained. Two source lights implied: a cool highlight in the
+   upper-left (--neo-hi) and a warm shadow in the lower-right (--neo-lo).
+   The tokens flip under [data-theme="light"] so the same utilities read
+   correctly on either skin without touching the JSX.
+   ========================================================================== */
+
+:root {
+  --neo-hi: rgba(255, 255, 255, 0.03);
+  --neo-lo: rgba(0, 0, 0, 0.55);
+  --neo-hi-in: rgba(255, 255, 255, 0.025);
+  --neo-lo-in: rgba(0, 0, 0, 0.5);
+  --neo-surface: linear-gradient(150deg, #0f1720 0%, #0a1017 100%);
+  --neo-surface-hi: linear-gradient(150deg, #131c26 0%, #0b111a 100%);
+}
+
+@utility neo {
+  background: var(--neo-surface);
+  box-shadow:
+    -10px -10px 26px var(--neo-hi),
+    12px 12px 30px var(--neo-lo),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.05),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+@utility neo-inset {
+  background: linear-gradient(150deg, #0a1017 0%, #0d141c 100%);
+  box-shadow:
+    inset 6px 6px 14px var(--neo-lo-in),
+    inset -6px -6px 14px var(--neo-hi-in),
+    0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+@utility neo-btn {
+  background: var(--neo-surface-hi);
+  box-shadow:
+    -6px -6px 14px var(--neo-hi),
+    6px 6px 14px var(--neo-lo),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.045),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition:
+    box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.3s ease;
+}
+
+.neo-btn:hover {
+  box-shadow:
+    -3px -3px 10px var(--neo-hi),
+    3px 3px 10px var(--neo-lo),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.045),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.neo-btn:active,
+.neo-btn[data-pressed="true"] {
+  box-shadow:
+    inset 4px 4px 10px var(--neo-lo-in),
+    inset -4px -4px 10px var(--neo-hi-in);
+  transform: translateY(0);
+}
+
+@utility neo-chip {
+  background: var(--neo-surface-hi);
+  box-shadow:
+    -3px -3px 8px var(--neo-hi),
+    4px 4px 10px var(--neo-lo),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+@utility neo-icon {
+  background: linear-gradient(150deg, #131c26 0%, #0a1017 100%);
+  box-shadow:
+    -4px -4px 10px var(--neo-hi),
+    5px 5px 12px var(--neo-lo),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================================
+   LIGHT THEME
+   Inverts the ink/bone hierarchy so the same utilities compose a light skin.
+   Accents darken for contrast on a light surface; atmospheric dark overlays
+   are softened or reversed.
+   ========================================================================== */
+
+[data-theme="light"] {
+  --neo-hi: rgba(255, 255, 255, 0.85);
+  --neo-lo: rgba(140, 155, 168, 0.35);
+  --neo-hi-in: rgba(255, 255, 255, 0.9);
+  --neo-lo-in: rgba(140, 155, 168, 0.3);
+  --neo-surface: linear-gradient(150deg, #eef2f0 0%, #e2e7e5 100%);
+  --neo-surface-hi: linear-gradient(150deg, #f3f7f5 0%, #e5eae8 100%);
+
+  --color-ink-950: #ecf0ef;
+  --color-ink-900: #f3f5f4;
+  --color-ink-850: #e9edeb;
+  --color-ink-800: #e0e5e3;
+  --color-ink-700: #d4dbd8;
+  --color-ink-600: #c7cfcc;
+  --color-ink-500: #b8c2bf;
+
+  --color-bone: #14181b;
+  --color-bone-dim: #3a444d;
+  --color-mute: #53606a;
+  --color-mute-2: #87939c;
+
+  --color-gold: #a2701a;
+  --color-gold-hot: #bc8a34;
+  --color-aqua: #0f8579;
+  --color-aqua-deep: #0a6a61;
+  --color-clay: #b4603a;
+  --color-signal: #cf3d34;
+}
+
+[data-theme="light"] body {
+  background-color: #f3f5f4;
+}
+
+/* de-emphasise dark-only effects on a light page */
+[data-theme="light"] .text-shadow-ink {
+  text-shadow: none;
+}
+[data-theme="light"] .grain-layer {
+  opacity: 0.1;
+}
+[data-theme="light"] ::selection {
+  background: color-mix(in srgb, var(--color-gold) 42%, transparent);
+  color: #111;
+}
+[data-theme="light"] input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(90deg, rgba(20, 24, 27, 0.16), rgba(15, 133, 121, 0.55));
+}
+[data-theme="light"] .cv-type,
+[data-theme="light"] .cv-swatch,
+[data-theme="light"] .cv-dash {
+  filter: brightness(0.6) saturate(1.2);
+}
+
+/* the near-black atmospheric vignette that sits under the content:
+   on light it becomes a soft light edge instead of a dark one */
+.theme-vignette {
+  background: radial-gradient(140% 100% at 50% 0%, rgba(4, 7, 10, 0) 26%, rgba(4, 7, 10, 0.5) 72%, rgba(4, 7, 10, 0.72) 100%);
+}
+[data-theme="light"] .theme-vignette {
+  background: radial-gradient(140% 100% at 50% 0%, rgba(243, 245, 244, 0) 30%, rgba(236, 240, 239, 0.55) 78%, rgba(236, 240, 239, 0.8) 100%);
+}
+
+/* the hero figure needs a dark aura behind it so the screen-blend cut-out
+   keeps reading on a light page */
+.portrait-scrim {
+  background: radial-gradient(66% 54% at 50% 44%, rgba(4, 7, 10, 0.78), rgba(4, 7, 10, 0.32) 54%, transparent 75%);
+}
+[data-theme="light"] .portrait-scrim {
+  background: radial-gradient(66% 54% at 50% 44%, rgba(10, 14, 18, 0.94), rgba(10, 14, 18, 0.55) 54%, transparent 77%);
+}
+
+/* project artwork + case covers always show their image; tone the fallback
+   chips down so a light theme doesn't flash a dark block */
+.project-image {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.project-image.loaded {
+  opacity: 1;
+}
+
+/* ------------------------------- controls -------------------------------- */
+
+:root {
+  --cursor-scale: 1;
+  --cursor-opacity: 0.55;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, rgba(233, 237, 234, 0.18), rgba(102, 212, 194, 0.5));
+}
+input[type="range"]::-moz-range-track {
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(233, 237, 234, 0.2);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 14px;
+  width: 14px;
+  margin-top: -5.5px;
+  border-radius: 99px;
+  background: #e9edea;
+  border: 3px solid #04070a;
+  box-shadow: 0 0 0 1px rgba(102, 212, 194, 0.7), 0 0 18px rgba(102, 212, 194, 0.35);
+  cursor: grab;
+  transition: transform 0.2s ease;
+}
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.18);
+  cursor: grabbing;
+}
+input[type="range"]::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  border-radius: 99px;
+  background: #e9edea;
+  border: 2px solid #04070a;
+  box-shadow: 0 0 0 1px rgba(102, 212, 194, 0.7);
+}
+input[type="range"]:focus-visible {
+  outline: 2px solid rgba(102, 212, 194, 0.8);
+  outline-offset: 6px;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237e8f99' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+}
+
+::placeholder {
+  color: rgba(126, 143, 153, 0.55);
+}
